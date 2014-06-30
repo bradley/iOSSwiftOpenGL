@@ -1,6 +1,6 @@
 #OpenGL for iOS using Swift
 
-![example output]()
+![Example](example.png)
 
 A basic example of using OpenGL and GLSL Shaders in iOS using Swift.
 
