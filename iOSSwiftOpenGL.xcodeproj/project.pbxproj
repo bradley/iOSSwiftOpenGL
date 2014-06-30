@@ -13,6 +13,11 @@
 		AD8814701960EEBF005F2E41 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD88146E1960EEBF005F2E41 /* Main.storyboard */; };
 		AD8814721960EEBF005F2E41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD8814711960EEBF005F2E41 /* Images.xcassets */; };
 		AD88147E1960EEBF005F2E41 /* iOSSwiftOpenGLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD88147D1960EEBF005F2E41 /* iOSSwiftOpenGLTests.swift */; };
+		AD88148A1960EF38005F2E41 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD8814891960EF38005F2E41 /* OpenGLES.framework */; };
+		AD88148C1960EFBA005F2E41 /* SimpleVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AD88148B1960EFBA005F2E41 /* SimpleVertex.glsl */; };
+		AD88148E1960EFCE005F2E41 /* SimpleFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */; };
+		AD8814901960F047005F2E41 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = AD8814711960EEBF005F2E41 /* Images.xcassets */; };
+		AD8814911960F27B005F2E41 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8814871960EEDA005F2E41 /* OpenGLView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +41,10 @@
 		AD8814771960EEBF005F2E41 /* iOSSwiftOpenGLTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSSwiftOpenGLTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD88147C1960EEBF005F2E41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD88147D1960EEBF005F2E41 /* iOSSwiftOpenGLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSSwiftOpenGLTests.swift; sourceTree = "<group>"; };
+		AD8814871960EEDA005F2E41 /* OpenGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLView.swift; sourceTree = "<group>"; };
+		AD8814891960EF38005F2E41 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		AD88148B1960EFBA005F2E41 /* SimpleVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleVertex.glsl; path = ../SimpleVertex.glsl; sourceTree = "<group>"; };
+		AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleFragment.glsl; path = ../SimpleFragment.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD88148A1960EF38005F2E41 /* OpenGLES.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +69,7 @@
 		AD8814591960EEBF005F2E41 = {
 			isa = PBXGroup;
 			children = (
+				AD8814891960EF38005F2E41 /* OpenGLES.framework */,
 				AD8814641960EEBF005F2E41 /* iOSSwiftOpenGL */,
 				AD88147A1960EEBF005F2E41 /* iOSSwiftOpenGLTests */,
 				AD8814631960EEBF005F2E41 /* Products */,
@@ -79,9 +90,7 @@
 			children = (
 				AD8814671960EEBF005F2E41 /* AppDelegate.swift */,
 				AD88146C1960EEBF005F2E41 /* ViewController.swift */,
-				AD88146E1960EEBF005F2E41 /* Main.storyboard */,
-				AD8814711960EEBF005F2E41 /* Images.xcassets */,
-				AD8814691960EEBF005F2E41 /* iOSSwiftOpenGL.xcdatamodeld */,
+				AD8814871960EEDA005F2E41 /* OpenGLView.swift */,
 				AD8814651960EEBF005F2E41 /* Supporting Files */,
 			);
 			path = iOSSwiftOpenGL;
@@ -90,6 +99,11 @@
 		AD8814651960EEBF005F2E41 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AD88146E1960EEBF005F2E41 /* Main.storyboard */,
+				AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */,
+				AD88148B1960EFBA005F2E41 /* SimpleVertex.glsl */,
+				AD8814711960EEBF005F2E41 /* Images.xcassets */,
+				AD8814691960EEBF005F2E41 /* iOSSwiftOpenGL.xcdatamodeld */,
 				AD8814661960EEBF005F2E41 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -193,7 +207,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD8814701960EEBF005F2E41 /* Main.storyboard in Resources */,
+				AD88148E1960EFCE005F2E41 /* SimpleFragment.glsl in Resources */,
 				AD8814721960EEBF005F2E41 /* Images.xcassets in Resources */,
+				AD88148C1960EFBA005F2E41 /* SimpleVertex.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,8 +227,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD8814901960F047005F2E41 /* Images.xcassets in Sources */,
 				AD88146D1960EEBF005F2E41 /* ViewController.swift in Sources */,
 				AD88146B1960EEBF005F2E41 /* iOSSwiftOpenGL.xcdatamodeld in Sources */,
+				AD8814911960F27B005F2E41 /* OpenGLView.swift in Sources */,
 				AD8814681960EEBF005F2E41 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,6 +419,7 @@
 				AD8814831960EEBF005F2E41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AD8814841960EEBF005F2E41 /* Build configuration list for PBXNativeTarget "iOSSwiftOpenGLTests" */ = {
 			isa = XCConfigurationList;
@@ -409,6 +428,7 @@
 				AD8814861960EEBF005F2E41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
