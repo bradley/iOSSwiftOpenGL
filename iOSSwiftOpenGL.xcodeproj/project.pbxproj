@@ -100,8 +100,8 @@
 			isa = PBXGroup;
 			children = (
 				AD88146E1960EEBF005F2E41 /* Main.storyboard */,
-				AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */,
 				AD88148B1960EFBA005F2E41 /* SimpleVertex.glsl */,
+				AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */,
 				AD8814711960EEBF005F2E41 /* Images.xcassets */,
 				AD8814691960EEBF005F2E41 /* iOSSwiftOpenGL.xcdatamodeld */,
 				AD8814661960EEBF005F2E41 /* Info.plist */,

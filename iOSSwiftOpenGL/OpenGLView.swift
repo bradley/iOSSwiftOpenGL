@@ -193,7 +193,6 @@ class OpenGLView: UIView {
 		
 		glGenBuffers(1, &self.indexBuffer)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER.asUnsigned(), self.indexBuffer)
-		
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER.asUnsigned(), Int(sizeofValue(Indices)), &Indices, GL_STATIC_DRAW.asUnsigned())
 	}
 	
@@ -219,6 +218,8 @@ class OpenGLView: UIView {
 		glVertexAttribPointer(self.colorSlot, 4 as GLint, GL_FLOAT.asUnsigned(), GLboolean.convertFromIntegerLiteral(UInt8(GL_FALSE)), Int32(sizeof(Vertex)), colorSlotFirstComponent)
 		
 		// Calls glDrawElements to make the magic happen! This actually ends up calling your vertex shader for every vertex you pass in, and then the fragment shader on each pixel to display on the screen.
+		//	  Note that the second parameter to glDrawElements is the number of vertices to render. We use a C trick
+		//   here in order to determine this by dividing the size of Indices in bytes by the size of its first element in bytes.
 		let vertextBufferOffset: CConstVoidPointer = COpaquePointer(UnsafePointer<Int>(0))
 		glDrawElements(GL_TRIANGLES.asUnsigned(), Int32(GLfloat(sizeofValue(Indices)) / GLfloat(sizeofValue(Indices.0))), GL_UNSIGNED_BYTE.asUnsigned(), vertextBufferOffset)
 		
