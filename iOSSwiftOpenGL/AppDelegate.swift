@@ -47,14 +47,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func saveContext () {
 	    var error: NSError? = nil
 	    let managedObjectContext = self.managedObjectContext
-	    if managedObjectContext != nil {
 	        if managedObjectContext.hasChanges && !managedObjectContext.save(&error) {
 	            // Replace this implementation with code to handle the error appropriately.
 	            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
 	            //println("Unresolved error \(error), \(error.userInfo)")
 	            abort()
 	        }
-	    }
 	}
 
 	// #pragma mark - Core Data stack
@@ -62,12 +60,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Returns the managed object context for the application.
 	// If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
 	var managedObjectContext: NSManagedObjectContext {
-	    if !_managedObjectContext {
+	    if _managedObjectContext != nil {
 	        let coordinator = self.persistentStoreCoordinator
-	        if coordinator != nil {
 	            _managedObjectContext = NSManagedObjectContext()
 	            _managedObjectContext!.persistentStoreCoordinator = coordinator
-	        }
 	    }
 	    return _managedObjectContext!
 	}
@@ -76,9 +72,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Returns the managed object model for the application.
 	// If the model doesn't already exist, it is created from the application's model.
 	var managedObjectModel: NSManagedObjectModel {
-	    if !_managedObjectModel {
+	    if _managedObjectModel != nil {
 	        let modelURL = NSBundle.mainBundle().URLForResource("iOSSwiftOpenGL", withExtension: "momd")
-	        _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
+	        _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL!)
 	    }
 	    return _managedObjectModel!
 	}
@@ -87,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Returns the persistent store coordinator for the application.
 	// If the coordinator doesn't already exist, it is created and the application's store added to it.
 	var persistentStoreCoordinator: NSPersistentStoreCoordinator {
-	    if !_persistentStoreCoordinator {
+	    if _persistentStoreCoordinator != nil {
 	        let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("iOSSwiftOpenGL.sqlite")
 	        var error: NSError? = nil
 	        _persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
