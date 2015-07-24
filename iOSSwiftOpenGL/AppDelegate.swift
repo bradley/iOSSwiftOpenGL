@@ -14,8 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             
 	var window: UIWindow?
 
-
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
 		return true
 	}
@@ -124,7 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Returns the URL to the application's Documents directory.
 	var applicationDocumentsDirectory: NSURL {
 	    let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-	    return urls[urls.endIndex-1] as NSURL
+	    return urls[urls.endIndex-1] as! NSURL
 	}
 
 }

@@ -107,7 +107,7 @@ class OpenGLView: UIView {
     func setupLayer() {
         // CALayer's are, by default, non-opaque, which is 'bad for performance with OpenGL',
         //   so let's set our CAEAGLLayer layer to be opaque.
-        self.eaglLayer	= self.layer as CAEAGLLayer
+        self.eaglLayer	= self.layer as! CAEAGLLayer
         self.eaglLayer.opaque = true
     }
     
@@ -142,10 +142,10 @@ class OpenGLView: UIView {
         glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
     }
     
-    func compileShader(shaderName: NSString, shaderType: GLenum) -> GLuint {
+    func compileShader(shaderName: String, shaderType: GLenum) -> GLuint {
         
         // Get NSString with contents of our shader file.
-        var shaderPath: NSString = NSBundle.mainBundle().pathForResource(shaderName, ofType: "glsl")!
+        var shaderPath: String! = NSBundle.mainBundle().pathForResource(shaderName, ofType: "glsl")
         var error: NSError? = nil
         var shaderString = NSString(contentsOfFile:shaderPath, encoding: NSUTF8StringEncoding, error: &error)
         if (shaderString == nil) {
