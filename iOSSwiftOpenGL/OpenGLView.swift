@@ -32,6 +32,36 @@ var Indices: [GLubyte] = [
 ]
 
 
+//helper extensions to pass arguments to GL land
+extension Array {
+    func size () -> Int {
+        return self.count * sizeofValue(self[0])
+    }
+}
+
+extension Int32 {
+    func __conversion() -> GLenum {
+        return GLuint(self)
+    }
+    
+    func __conversion() -> GLboolean {
+        return GLboolean(UInt8(self))
+    }
+}
+
+extension Int {
+    func __conversion() -> Int32 {
+        return Int32(self)
+    }
+    
+    func __conversion() -> GLubyte {
+        return GLubyte(self)
+    }
+    
+}
+
+
+
 class OpenGLView: UIView {
     
     var eaglLayer: CAEAGLLayer!
@@ -57,7 +87,7 @@ class OpenGLView: UIView {
     /* Lifecycle
     ------------------------------------------*/
     
-    init(coder aDecoder: NSCoder!) {
+    required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.setupLayer()
@@ -77,7 +107,7 @@ class OpenGLView: UIView {
     func setupLayer() {
         // CALayer's are, by default, non-opaque, which is 'bad for performance with OpenGL',
         //   so let's set our CAEAGLLayer layer to be opaque.
-        self.eaglLayer	= self.layer as CAEAGLLayer
+        self.eaglLayer	= self.layer as! CAEAGLLayer
         self.eaglLayer.opaque = true
     }
     
@@ -88,7 +118,7 @@ class OpenGLView: UIView {
         var api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES2
         self.context = EAGLContext(API: api)
         
-        if (!self.context) {
+        if (self.context == nil) {
             println("Failed to initialize OpenGLES 2.0 context!")
             exit(1)
         }
@@ -101,33 +131,36 @@ class OpenGLView: UIView {
     
     func setupRenderBuffer() {
         glGenRenderbuffers(1, &self.colorRenderBuffer)
-        glBindRenderbuffer(GL_RENDERBUFFER, self.colorRenderBuffer)
+        glBindRenderbuffer(GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
         self.context.renderbufferStorage(Int(GL_RENDERBUFFER), fromDrawable:self.eaglLayer)
     }
     
     func setupFrameBuffer() {
         var frameBuffer: GLuint = GLuint()
         glGenFramebuffers(1, &frameBuffer)
-        glBindFramebuffer(GL_FRAMEBUFFER.asUnsigned(), frameBuffer)
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER.asUnsigned(), GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, self.colorRenderBuffer)
+        glBindFramebuffer(GLenum(GL_FRAMEBUFFER), frameBuffer)
+        glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
     }
     
-    func compileShader(shaderName: NSString, shaderType: GLenum) -> GLuint {
+    func compileShader(shaderName: String, shaderType: GLenum) -> GLuint {
         
         // Get NSString with contents of our shader file.
-        var shaderPath: NSString = NSBundle.mainBundle().pathForResource(shaderName, ofType: "glsl")
+        var shaderPath: String! = NSBundle.mainBundle().pathForResource(shaderName, ofType: "glsl")
         var error: NSError? = nil
-        var shaderString = NSString.stringWithContentsOfFile(shaderPath, encoding: NSUTF8StringEncoding, error: &error)
-        if (!shaderString) {
+        var shaderString = NSString(contentsOfFile:shaderPath, encoding: NSUTF8StringEncoding, error: &error)
+        if (shaderString == nil) {
             println("Failed to set contents shader of shader file!")
         }
         
         // Tell OpenGL to create an OpenGL object to represent the shader, indicating if it's a vertex or a fragment shader.
         var shaderHandle: GLuint = glCreateShader(shaderType)
         
+        if shaderHandle == 0 {
+            NSLog("Couldn't create shader")
+        }
         // Conver shader string to CString and call glShaderSource to give OpenGL the source for the shader.
-        var shaderStringUTF8: CString = shaderString!.UTF8String
-        var shaderStringLength: GLint = GLint.convertFromIntegerLiteral(Int32(shaderString!.length))
+        var shaderStringUTF8 = shaderString!.UTF8String
+        var shaderStringLength: GLint = GLint(Int32(shaderString!.length))
         glShaderSource(shaderHandle, 1, &shaderStringUTF8, &shaderStringLength)
         
         // Tell OpenGL to compile the shader.
@@ -135,7 +168,7 @@ class OpenGLView: UIView {
         
         // But compiling can fail! If we have errors in our GLSL code, we can here and output any errors.
         var compileSuccess: GLint = GLint()
-        glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &compileSuccess)
+        glGetShaderiv(shaderHandle, GLenum(GL_COMPILE_STATUS), &compileSuccess)
         if (compileSuccess == GL_FALSE) {
             println("Failed to compile shader!")
             // TODO: Actually output the error that we can get from the glGetShaderInfoLog function.
@@ -148,8 +181,8 @@ class OpenGLView: UIView {
     func compileShaders() {
         
         // Compile our vertex and fragment shaders.
-        var vertexShader: GLuint = self.compileShader("SimpleVertex", shaderType: GL_VERTEX_SHADER)
-        var fragmentShader: GLuint = self.compileShader("SimpleFragment", shaderType: GL_FRAGMENT_SHADER)
+        var vertexShader: GLuint = self.compileShader("SimpleVertex", shaderType: GLenum(GL_VERTEX_SHADER))
+        var fragmentShader: GLuint = self.compileShader("SimpleFragment", shaderType: GLenum(GL_FRAGMENT_SHADER))
         
         // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
         var programHandle: GLuint = glCreateProgram()
@@ -159,7 +192,7 @@ class OpenGLView: UIView {
         
         // Check for any errors.
         var linkSuccess: GLint = GLint()
-        glGetProgramiv(programHandle, GL_LINK_STATUS, &linkSuccess)
+        glGetProgramiv(programHandle, GLenum(GL_LINK_STATUS), &linkSuccess)
         if (linkSuccess == GL_FALSE) {
             println("Failed to create shader program!")
             // TODO: Actually output the error that we can get from the glGetProgramInfoLog function.
@@ -171,8 +204,8 @@ class OpenGLView: UIView {
         
         // Finally, call glGetAttribLocation to get a pointer to the input values for the vertex shader, so we
         //  can set them in code. Also call glEnableVertexAttribArray to enable use of these arrays (they are disabled by default).
-        self.positionSlot = glGetAttribLocation(programHandle, "Position")
-        self.colorSlot = glGetAttribLocation(programHandle, "SourceColor")
+        self.positionSlot = GLuint(glGetAttribLocation(programHandle, "Position"))
+        self.colorSlot = GLuint(glGetAttribLocation(programHandle, "SourceColor"))
         glEnableVertexAttribArray(self.positionSlot)
         glEnableVertexAttribArray(self.colorSlot)
     }
@@ -184,22 +217,22 @@ class OpenGLView: UIView {
         glBindVertexArrayOES(VAO);
         
         glGenBuffers(1, &vertexBuffer)
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer)
-        glBufferData(GL_ARRAY_BUFFER, Vertices.size(), Vertices, GL_STATIC_DRAW)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), vertexBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), Vertices.size(), Vertices, GLenum(GL_STATIC_DRAW))
         
-        let positionSlotFirstComponent = ConstUnsafePointer<Int>(0)
+//        let positionSlotFirstComponent : UnsafePointer<Int>(&0)
         glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), positionSlotFirstComponent)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
         
         glEnableVertexAttribArray(colorSlot)
-        let colorSlotFirstComponent = ConstUnsafePointer<Int>(sizeof(Float) * 3)
-        glVertexAttribPointer(colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), colorSlotFirstComponent)
+//        let colorSlotFirstComponent = UnsafePointer<Int>(sizeof(Float) * 3)
+        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
         
         glGenBuffers(1, &indexBuffer)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size(), Indices, GL_STATIC_DRAW)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), Indices.size(), Indices, GLenum(GL_STATIC_DRAW))
         
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         glBindVertexArrayOES(0)
     }
     
@@ -207,7 +240,7 @@ class OpenGLView: UIView {
         glBindVertexArrayOES(VAO);
         glViewport(0, 0, GLint(self.frame.size.width), GLint(self.frame.size.height));
         
-        glDrawElements(GL_TRIANGLES, Indices.count, GL_UNSIGNED_BYTE, nil)
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
         
@@ -215,33 +248,5 @@ class OpenGLView: UIView {
     }
 }
 
-
-//helper extensions to pass arguments to GL land
-extension Array {
-    func size () -> Int {
-        return self.count * sizeofValue(self[0])
-    }
-}
-
-extension Int32 {
-    func __conversion() -> GLenum {
-        return GLuint(self.asUnsigned())
-    }
-    
-    func __conversion() -> GLboolean {
-        return GLboolean.convertFromIntegerLiteral(UInt8(self))
-    }
-}
-
-extension Int {
-    func __conversion() -> Int32 {
-        return Int32(self)
-    }
-    
-    func __conversion() -> GLubyte {
-        return GLubyte(self)
-    }
-    
-}
 ///////////////////////////////////////
 
