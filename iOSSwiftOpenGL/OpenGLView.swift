@@ -225,14 +225,16 @@ class OpenGLView: UIView {
         glGenBuffers(1, &vertexBuffer)
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), vertexBuffer)
         glBufferData(GLenum(GL_ARRAY_BUFFER), Vertices.size(), Vertices, GLenum(GL_STATIC_DRAW))
-        
-//        let positionSlotFirstComponent : UnsafePointer<Int>(&0)
+
+        // Create pointer
+        let ptr = UnsafePointer<GLfloat>(bitPattern: 0)
+
         glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), ptr) // nil works too for the last parameter
         
         glEnableVertexAttribArray(colorSlot)
-//        let colorSlotFirstComponent = UnsafePointer<Int>(sizeof(Float) * 3)
-        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
+        // 3 is the position vertex's size
+        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), ptr.advancedBy(3))
         
         glGenBuffers(1, &indexBuffer)
         glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
@@ -245,8 +247,10 @@ class OpenGLView: UIView {
     func render() {
         glBindVertexArrayOES(VAO);
         glViewport(0, 0, GLint(self.frame.size.width), GLint(self.frame.size.height));
-        
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+
+        // Create pointer
+        let ptr = UnsafePointer<GLfloat>(bitPattern: 0)
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), ptr) // nil works too for the last parameter
         
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
         
