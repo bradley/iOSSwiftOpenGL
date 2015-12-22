@@ -46,12 +46,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func saveContext () {
 	    var error: NSError? = nil
 	    let managedObjectContext = self.managedObjectContext
-	        if managedObjectContext.hasChanges && !managedObjectContext.save(&error) {
-	            // Replace this implementation with code to handle the error appropriately.
-	            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-	            //println("Unresolved error \(error), \(error.userInfo)")
-	            abort()
-	        }
+	        if managedObjectContext.hasChanges {
+				do {
+					try managedObjectContext.save()
+				} catch let error1 as NSError {
+					error = error1
+					// Replace this implementation with code to handle the error appropriately.
+					// abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+					//println("Unresolved error \(error), \(error.userInfo)")
+					abort()
+				}
+			}
 	}
 
 	// #pragma mark - Core Data stack
@@ -86,7 +91,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	        let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("iOSSwiftOpenGL.sqlite")
 	        var error: NSError? = nil
 	        _persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-	        if _persistentStoreCoordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil, error: &error) == nil {
+	        do {
+				try _persistentStoreCoordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
+			} catch let error1 as NSError {
+				error = error1
 	            /*
 	            Replace this implementation with code to handle the error appropriately.
 
@@ -123,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Returns the URL to the application's Documents directory.
 	var applicationDocumentsDirectory: NSURL {
 	    let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-	    return urls[urls.endIndex-1] as! NSURL
+	    return urls[urls.endIndex-1] 
 	}
 
 }
