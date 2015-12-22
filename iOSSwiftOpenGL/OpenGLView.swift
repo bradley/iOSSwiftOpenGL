@@ -230,7 +230,7 @@ class OpenGLView: UIView {
         let ptr = UnsafePointer<GLfloat>(bitPattern: 0)
 
         glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), ptr.advancedBy(0)) // nil works too for the last parameter
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), ptr) // nil works too for the last parameter
         
         glEnableVertexAttribArray(colorSlot)
         // 3 is the position vertex's size
@@ -250,7 +250,7 @@ class OpenGLView: UIView {
 
         // Create pointer
         let ptr = UnsafePointer<GLfloat>(bitPattern: 0)
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), ptr.advancedBy(0)) // nil works too for the last parameter
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), ptr) // nil works too for the last parameter
         
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
         
