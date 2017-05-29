@@ -35,7 +35,7 @@ var Indices: [GLubyte] = [
 //helper extensions to pass arguments to GL land
 extension Array {
     func size () -> Int {
-        return self.count * sizeofValue(self[0])
+        return self.count * MemoryLayout.size(ofValue: self[0])
     }
 }
 
@@ -77,7 +77,7 @@ class OpenGLView: UIView {
     /* Class Methods
     ------------------------------------------*/
     
-    override class func layerClass() -> AnyClass {
+    override class var layerClass : AnyClass {
         // In order for our view to display OpenGL content, we need to set it's
         //   default layer to be a CAEAGLayer
         return CAEAGLLayer.self
@@ -87,7 +87,7 @@ class OpenGLView: UIView {
     /* Lifecycle
     ------------------------------------------*/
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.setupLayer()
@@ -108,23 +108,23 @@ class OpenGLView: UIView {
         // CALayer's are, by default, non-opaque, which is 'bad for performance with OpenGL',
         //   so let's set our CAEAGLLayer layer to be opaque.
         self.eaglLayer	= self.layer as! CAEAGLLayer
-        self.eaglLayer.opaque = true
+        self.eaglLayer.isOpaque = true
     }
     
     func setupContext() {
         // Just like with CoreGraphics, in order to do much with OpenGL, we need a context.
         //   Here we create a new context with the version of the rendering API we want and
         //   tells OpenGL that when we draw, we want to do so within this context.
-        var api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES2
-        self.context = EAGLContext(API: api)
+        let api: EAGLRenderingAPI = EAGLRenderingAPI.openGLES2
+        self.context = EAGLContext(api: api)
         
         if (self.context == nil) {
-            println("Failed to initialize OpenGLES 2.0 context!")
+            print("Failed to initialize OpenGLES 2.0 context!")
             exit(1)
         }
         
-        if (!EAGLContext.setCurrentContext(self.context)) {
-            println("Failed to set current OpenGL context!")
+        if (!EAGLContext.setCurrent(self.context)) {
+            print("Failed to set current OpenGL context!")
             exit(1)
         }
     }
@@ -132,7 +132,7 @@ class OpenGLView: UIView {
     func setupRenderBuffer() {
         glGenRenderbuffers(1, &self.colorRenderBuffer)
         glBindRenderbuffer(GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
-        self.context.renderbufferStorage(Int(GL_RENDERBUFFER), fromDrawable:self.eaglLayer)
+        self.context.renderbufferStorage(Int(GL_RENDERBUFFER), from:self.eaglLayer)
     }
     
     func setupFrameBuffer() {
@@ -142,24 +142,26 @@ class OpenGLView: UIView {
         glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
     }
     
-    func compileShader(shaderName: String, shaderType: GLenum) -> GLuint {
+    func compileShader(_ shaderName: String, shaderType: GLenum) -> GLuint {
         
         // Get NSString with contents of our shader file.
-        var shaderPath: String! = NSBundle.mainBundle().pathForResource(shaderName, ofType: "glsl")
-        var error: NSError? = nil
-        var shaderString = NSString(contentsOfFile:shaderPath, encoding: NSUTF8StringEncoding, error: &error)
-        if (shaderString == nil) {
-            println("Failed to set contents shader of shader file!")
+        let shaderPath: String! = Bundle.main.path(forResource: shaderName, ofType: "glsl")
+        var shaderString : NSString!
+        do {
+            try shaderString = NSString(contentsOfFile:shaderPath, encoding: String.Encoding.utf8.rawValue)
+
+        } catch  {
+            print("Failed to set contents shader of shader file!")
         }
         
         // Tell OpenGL to create an OpenGL object to represent the shader, indicating if it's a vertex or a fragment shader.
-        var shaderHandle: GLuint = glCreateShader(shaderType)
+        let shaderHandle: GLuint = glCreateShader(shaderType)
         
         if shaderHandle == 0 {
             NSLog("Couldn't create shader")
         }
         // Conver shader string to CString and call glShaderSource to give OpenGL the source for the shader.
-        var shaderStringUTF8 = shaderString!.UTF8String
+        var shaderStringUTF8 = shaderString!.utf8String
         var shaderStringLength: GLint = GLint(Int32(shaderString!.length))
         glShaderSource(shaderHandle, 1, &shaderStringUTF8, &shaderStringLength)
         
@@ -170,7 +172,7 @@ class OpenGLView: UIView {
         var compileSuccess: GLint = GLint()
         glGetShaderiv(shaderHandle, GLenum(GL_COMPILE_STATUS), &compileSuccess)
         if (compileSuccess == GL_FALSE) {
-            println("Failed to compile shader!")
+            print("Failed to compile shader!")
             // TODO: Actually output the error that we can get from the glGetShaderInfoLog function.
             exit(1);
         }
@@ -181,11 +183,11 @@ class OpenGLView: UIView {
     func compileShaders() {
         
         // Compile our vertex and fragment shaders.
-        var vertexShader: GLuint = self.compileShader("SimpleVertex", shaderType: GLenum(GL_VERTEX_SHADER))
-        var fragmentShader: GLuint = self.compileShader("SimpleFragment", shaderType: GLenum(GL_FRAGMENT_SHADER))
+        let vertexShader: GLuint = self.compileShader("SimpleVertex", shaderType: GLenum(GL_VERTEX_SHADER))
+        let fragmentShader: GLuint = self.compileShader("SimpleFragment", shaderType: GLenum(GL_FRAGMENT_SHADER))
         
         // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
-        var programHandle: GLuint = glCreateProgram()
+        let programHandle: GLuint = glCreateProgram()
         glAttachShader(programHandle, vertexShader)
         glAttachShader(programHandle, fragmentShader)
         glLinkProgram(programHandle)
@@ -194,7 +196,7 @@ class OpenGLView: UIView {
         var linkSuccess: GLint = GLint()
         glGetProgramiv(programHandle, GLenum(GL_LINK_STATUS), &linkSuccess)
         if (linkSuccess == GL_FALSE) {
-            println("Failed to create shader program!")
+            print("Failed to create shader program!")
             // TODO: Actually output the error that we can get from the glGetProgramInfoLog function.
             exit(1);
         }
@@ -222,11 +224,11 @@ class OpenGLView: UIView {
         
 //        let positionSlotFirstComponent : UnsafePointer<Int>(&0)
         glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(MemoryLayout<Vertex>.size), nil)
         
         glEnableVertexAttribArray(colorSlot)
 //        let colorSlotFirstComponent = UnsafePointer<Int>(sizeof(Float) * 3)
-        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Vertex)), nil)
+        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(MemoryLayout<Vertex>.size), nil)
         
         glGenBuffers(1, &indexBuffer)
         glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
