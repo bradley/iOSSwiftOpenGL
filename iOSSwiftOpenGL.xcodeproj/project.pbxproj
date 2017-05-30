@@ -18,6 +18,7 @@
 		AD88148E1960EFCE005F2E41 /* SimpleFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */; };
 		AD8814901960F047005F2E41 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = AD8814711960EEBF005F2E41 /* Images.xcassets */; };
 		AD8814911960F27B005F2E41 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8814871960EEDA005F2E41 /* OpenGLView.swift */; };
+		CB2DB5921EDCB462008333C6 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB2DB5911EDCB462008333C6 /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		AD8814891960EF38005F2E41 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		AD88148B1960EFBA005F2E41 /* SimpleVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleVertex.glsl; path = ../SimpleVertex.glsl; sourceTree = "<group>"; };
 		AD88148D1960EFCE005F2E41 /* SimpleFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleFragment.glsl; path = ../SimpleFragment.glsl; sourceTree = "<group>"; };
+		CB2DB5911EDCB462008333C6 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				AD8814711960EEBF005F2E41 /* Images.xcassets */,
 				AD8814691960EEBF005F2E41 /* iOSSwiftOpenGL.xcdatamodeld */,
 				AD8814661960EEBF005F2E41 /* Info.plist */,
+				CB2DB5911EDCB462008333C6 /* Launch Screen.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -175,9 +178,12 @@
 				TargetAttributes = {
 					AD8814611960EEBF005F2E41 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = M3DTZN9V9B;
+						LastSwiftMigration = 0830;
 					};
 					AD8814761960EEBF005F2E41 = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 0830;
 						TestTargetID = AD8814611960EEBF005F2E41;
 					};
 				};
@@ -209,6 +215,7 @@
 				AD8814701960EEBF005F2E41 /* Main.storyboard in Resources */,
 				AD88148E1960EFCE005F2E41 /* SimpleFragment.glsl in Resources */,
 				AD8814721960EEBF005F2E41 /* Images.xcassets in Resources */,
+				CB2DB5921EDCB462008333C6 /* Launch Screen.storyboard in Resources */,
 				AD88148C1960EFBA005F2E41 /* SimpleVertex.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,9 +354,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = M3DTZN9V9B;
 				INFOPLIST_FILE = iOSSwiftOpenGL/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -358,9 +367,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = M3DTZN9V9B;
 				INFOPLIST_FILE = iOSSwiftOpenGL/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -380,6 +391,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
@@ -396,6 +408,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
