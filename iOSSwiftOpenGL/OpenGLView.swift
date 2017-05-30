@@ -6,12 +6,8 @@
 //  Copyright (c) 2014 Bradley Griffith. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import QuartzCore
 import OpenGLES
-import GLKit
-
 
 
 struct Vertex {
@@ -38,29 +34,6 @@ extension Array {
         return self.count * MemoryLayout.size(ofValue: self[0])
     }
 }
-
-extension Int32 {
-    func __conversion() -> GLenum {
-        return GLuint(self)
-    }
-    
-    func __conversion() -> GLboolean {
-        return GLboolean(UInt8(self))
-    }
-}
-
-extension Int {
-    func __conversion() -> Int32 {
-        return Int32(self)
-    }
-    
-    func __conversion() -> GLubyte {
-        return GLubyte(self)
-    }
-    
-}
-
-
 
 class OpenGLView: UIView {
     
@@ -224,11 +197,11 @@ class OpenGLView: UIView {
         
 //        let positionSlotFirstComponent : UnsafePointer<Int>(&0)
         glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(MemoryLayout<Vertex>.size), nil)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(MemoryLayout<Vertex>.size), nil)
         
         glEnableVertexAttribArray(colorSlot)
 //        let colorSlotFirstComponent = UnsafePointer<Int>(sizeof(Float) * 3)
-        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(MemoryLayout<Vertex>.size), nil)
+        glVertexAttribPointer(colorSlot, 4, GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(MemoryLayout<Vertex>.size), nil)
         
         glGenBuffers(1, &indexBuffer)
         glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
@@ -240,7 +213,7 @@ class OpenGLView: UIView {
     
     func render() {
         glBindVertexArrayOES(VAO);
-        glViewport(0, 0, GLint(self.frame.size.width), GLint(self.frame.size.height));
+        glViewport(0, 0, GLsizei(self.frame.size.width), GLsizei(self.frame.size.height));
         
         glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
